@@ -1,17 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cropsData } from "../../lib/data/crops";
+import { getChecklist, saveChecklist } from "../../lib/data";
+import { useAuth } from "../../lib/auth";
 
 export default function CropsContent() {
   const [search, setSearch] = useState("");
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const { user } = useAuth();
 
   const [selectedStars, setSelectedStars] = useState<Record<string, number>>({});
 
-  const handleStarSelect = (cropName: string, star: number) => {
-    setSelectedStars(prev => ({ ...prev, [cropName]: star }));
+  useEffect(() => {
+    if (user) {
+      getChecklist(user.uid).then((checklist) => {
+        setSelectedStars(checklist.crops || {});
+      });
+    }
+  }, [user]);
+
+  const handleStarSelect = async (cropName: string, star: number) => {
+    const newSelectedStars = { ...selectedStars, [cropName]: star };
+    setSelectedStars(newSelectedStars);
+    if (user) {
+      const checklist = await getChecklist(user.uid);
+      checklist.crops = newSelectedStars;
+      await saveChecklist(user.uid, checklist);
+    }
   };
 
   // FILTERING

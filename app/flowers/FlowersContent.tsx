@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { flowersData } from "../../lib/data/flowers";
+import { getChecklist, saveChecklist } from "../../lib/data";
+import { useAuth } from "../../lib/auth";
 
 // Heart icons for each color
 const hearts: Record<string, string> = {
@@ -20,20 +22,35 @@ export default function FlowersContent() {
   const [search, setSearch] = useState("");
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const { user } = useAuth();
 
   // Track selected colors
   const [selected, setSelected] = useState<
     Record<string, Record<string, boolean>>
   >({});
 
-  const toggle = (flowerName: string, colorKey: string) => {
-    setSelected(prev => ({
-      ...prev,
+  useEffect(() => {
+    if (user) {
+      getChecklist(user.uid).then((checklist) => {
+        setSelected(checklist.flowers || {});
+      });
+    }
+  }, [user]);
+
+  const toggle = async (flowerName: string, colorKey: string) => {
+    const newSelected = {
+      ...selected,
       [flowerName]: {
-        ...(prev[flowerName] || {}),
-        [colorKey]: !prev[flowerName]?.[colorKey]
+        ...(selected[flowerName] || {}),
+        [colorKey]: !selected[flowerName]?.[colorKey]
       }
-    }));
+    };
+    setSelected(newSelected);
+    if (user) {
+      const checklist = await getChecklist(user.uid);
+      checklist.flowers = newSelected;
+      await saveChecklist(user.uid, checklist);
+    }
   };
 
   // Break colors into rows of 3

@@ -1,16 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cookingData } from "../../lib/data/cooking";
+import { getChecklist, saveChecklist } from "../../lib/data";
+import { useAuth } from "../../lib/auth";
 
 export default function CookingContent() {
   const [selectedStars, setSelectedStars] = useState<Record<string, number>>({});
   const [search, setSearch] = useState("");
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const { user } = useAuth();
 
-  const handleStarSelect = (name: string, star: number) => {
-    setSelectedStars(prev => ({ ...prev, [name]: star }));
+  useEffect(() => {
+    if (user) {
+      getChecklist(user.uid).then((checklist) => {
+        setSelectedStars(checklist.cooking || {});
+      });
+    }
+  }, [user]);
+
+  const handleStarSelect = async (name: string, value: number) => {
+    const newSelectedStars = { ...selectedStars, [name]: value };
+    setSelectedStars(newSelectedStars);
+    if (user) {
+      const checklist = await getChecklist(user.uid);
+      checklist.cooking = newSelectedStars;
+      await saveChecklist(user.uid, checklist);
+    }
   };
 
   // FILTERING

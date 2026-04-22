@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AuthGuard from "@/components/AuthGuard";
+import AuthGuard from "@/app/components/AuthGuard";
 import SectionHeader from "@/app/components/SectionHeader";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/app/components/LoadingSpinner";
+
+import { getAllData } from "@/lib/data";
 
 export default function MissingInfoPage() {
   const [missing, setMissing] = useState<any[]>([]);

@@ -5,9 +5,12 @@ import SectionHeader from "@/app/components/SectionHeader";
 import FilterChips from "@/app/components/FilterChips";
 import DataTable from "@/app/components/DataTable";
 import DataCard from "@/app/components/DataCard";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/app/components/LoadingSpinner";
+import AuthGuard from "@/app/components/AuthGuard";
 
 import { Creature } from "@/types/Creature";
+import { getAllData, filterByWeather, filterByTime, filterByLocation } from "@/lib/data";
+import { isMobile } from "@/lib/breakpoints";
 
 export default function SpecialEventsPage() {
   const [allCreatures, setAllCreatures] = useState<Creature[]>([]);

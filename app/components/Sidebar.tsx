@@ -3,15 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "../../lib/auth";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const linkClass = (path: string) =>
     pathname === path
       ? "bg-purple-200 text-purple-800 font-semibold"
       : "text-zinc-700 hover:bg-purple-100";
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <>
@@ -55,6 +61,22 @@ export default function Sidebar() {
         <Link href="/crops" className={`px-3 py-2 rounded-lg ${linkClass("/crops")}`}>
           Crops
         </Link>
+        <Link href="/fashionwave" className={`px-3 py-2 rounded-lg ${linkClass("/fashionwave")}`}>
+          Fashionwave
+        </Link>
+        <Link href="/incomplete" className={`px-3 py-2 rounded-lg ${linkClass("/incomplete")}`}>
+          Incomplete
+        </Link>
+
+        <div className="mt-auto">
+          <p className="text-sm text-gray-600 mb-2">Logged in as: {user?.email}</p>
+          <button
+            onClick={handleLogout}
+            className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+          >
+            Logout
+          </button>
+        </div>
       </aside>
     </>
   );

@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { insectsData } from "../../lib/data/insects";
+import { getChecklist, saveChecklist } from "../../lib/data";
+import { useAuth } from "../../lib/auth";
 
 const weatherIcons: Record<string, string> = {
   sun: "🌞",
@@ -25,9 +27,24 @@ export default function InsectsContent() {
   const [timeFilter, setTimeFilter] = useState<string | null>(null);
   const [sortColumn, setSortColumn] = useState<null | string>(null);
   const [sortAsc, setSortAsc] = useState(true);
+  const { user } = useAuth();
 
-  const handleStarSelect = (name: string, value: number) => {
-    setCaughtStars(prev => ({ ...prev, [name]: value }));
+  useEffect(() => {
+    if (user) {
+      getChecklist(user.uid).then((checklist) => {
+        setCaughtStars(checklist.insects || {});
+      });
+    }
+  }, [user]);
+
+  const handleStarSelect = async (name: string, value: number) => {
+    const newCaughtStars = { ...caughtStars, [name]: value };
+    setCaughtStars(newCaughtStars);
+    if (user) {
+      const checklist = await getChecklist(user.uid);
+      checklist.insects = newCaughtStars;
+      await saveChecklist(user.uid, checklist);
+    }
   };
 
   // FILTERING

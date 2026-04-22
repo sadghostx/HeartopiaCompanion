@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 import SectionHeader from "@/app/components/SectionHeader";
 import PastelProgressBar from "@/app/components/PastelProgressBar";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/app/components/LoadingSpinner";
+import AuthGuard from "@/app/components/AuthGuard";
+
+import { useAuth } from "@/lib/auth";
+import { getAllData, getChecklist } from "@/lib/data";
 
 export default function CompletionPage() {
   const { user } = useAuth();
