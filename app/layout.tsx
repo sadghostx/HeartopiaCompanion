@@ -1,6 +1,5 @@
 import "./globals.css";
-import Sidebar from "./components/Sidebar";
-import AuthGuard from "./components/AuthGuard";
+import ClientLayout from "./components/ClientLayout";
 
 export const metadata = {
   title: "Heartopia Guide",
@@ -11,15 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="bg-[#F7F5FB] text-zinc-700">
-        <AuthGuard>
-          {/* Sidebar appears on every page */}
-          <Sidebar />
-
-          {/* Page content shifts right on desktop */}
-          <main className="sm:ml-56 p-4">
-            {children}
-          </main>
-        </AuthGuard>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

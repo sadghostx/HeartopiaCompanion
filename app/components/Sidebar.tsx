@@ -8,7 +8,7 @@ import { useAuth } from "../../lib/auth";
 export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   const linkClass = (path: string) =>
     pathname === path
@@ -18,6 +18,11 @@ export default function Sidebar() {
   const handleLogout = async () => {
     await logout();
   };
+
+  // Don't show sidebar on login page or if not authenticated
+  if (pathname === "/login" || !isAuthenticated) {
+    return null;
+  }
 
   return (
     <>
