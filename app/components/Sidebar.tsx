@@ -74,7 +74,9 @@ export default function Sidebar() {
         </Link>
 
         <div className="mt-auto">
-          <p className="text-sm text-gray-600 mb-2">Logged in as: {user?.email}</p>
+          <p className="text-sm text-gray-600 mb-2">
+            Logged in as: {user?.displayName || user?.email}
+          </p>
           <button
             onClick={handleLogout}
             className="w-full px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"

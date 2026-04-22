@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { auth } from "../firebase";
-import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail } from "firebase/auth";
+import { User, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +33,14 @@ export function useAuth() {
     await sendPasswordResetEmail(auth, email);
   };
 
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    });
+    await signInWithPopup(auth, provider);
+  };
+
   return {
     user,
     isAuthenticated: !!user,
@@ -41,5 +49,6 @@ export function useAuth() {
     register,
     logout,
     resetPassword,
+    signInWithGoogle,
   };
 }

@@ -24,3 +24,9 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+// NOTE: To enable Google Sign-In:
+// 1. Go to Firebase Console > Authentication > Sign-in method
+// 2. Enable "Google" provider
+// 3. Add your domain (localhost:3000 for development) to authorized domains
+// 4. The Google Sign-In button will work automatically after these steps
